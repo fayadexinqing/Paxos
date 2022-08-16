@@ -1,0 +1,42 @@
+syntax = "proto2";
+option cc_generic_services = true;
+package Paxos;
+
+message PaxosId{
+  required string key = 1;
+}
+
+message Ballot {
+  optional uint64 proposer_id = 1;
+  required uint64 seq = 2;
+};
+
+message Value {
+  required string val = 1;
+};
+
+message PrepareRequest {
+  required PaxosId id = 1;
+  required Ballot bal = 2;
+};
+
+message PrepareResponse {
+  required Ballot last_bal = 1;
+  optional Value val = 2;
+  optional Ballot v_bal = 3;
+};
+
+message AcceptRequest {
+  required PaxosId id = 1;
+  required Ballot bal = 2;
+  required Value val = 3;
+};
+
+message AcceptResponse {
+  required Ballot last_bal = 1;
+};
+
+service Paxos {
+  rpc Prepare(PrepareRequest) returns (PrepareResponse);
+  rpc Accept(AcceptRequest) returns (AcceptResponse);
+};
